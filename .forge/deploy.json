@@ -1,0 +1,9 @@
+{
+  "provider": "vercel",
+  "projectName": "online-note-board",
+  "source": "local_files",
+  "target": "preview",
+  "gitRemoteUrl": null,
+  "workspaceRoot": "/home/mega/Documents/online-note-board",
+  "confirmedAt": "2026-11-17T19:35:43.032683Z"
+}

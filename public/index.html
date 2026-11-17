@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Public Note Board</title>
+    <style>
+        body { 
+            font-family: 'Dancing Script', 'Segoe UI', cursive; 
+            background-color: #fce8a8; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px; 
+        }
+        .container { width: 100%; max-width: 400px; }
+        h1 { color: #5d4037; text-align: center; margin-bottom: 20px; }
+        #noteInput { 
+            width: 100%; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        button { 
+            width: 100%; 
+            padding: 10px; 
+            background: #5d4037; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px;
+        }
+        #notes { margin-top: 30px; width: 100%; display: grid; gap: 20px; }
+        .note { 
+            background: #fff9c4; 
+            padding: 20px; 
+            border-radius: 2px; 
+            box-shadow: 5px 5px 7px rgba(0,0,0,0.1); 
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .note:nth-child(even) { transform: rotate(2deg); background: #ffccbc; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Public Sticky Notes</h1>
+        <input id="noteInput" placeholder="Write a note..." />
+        <button onclick="sendNote()">Pin Note</button>
+        <div id="notes"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const noteInput = document.getElementById('noteInput');
+        const notesDiv = document.getElementById('notes');
+
+        function sendNote() {
+            if (noteInput.value.trim() === '') return;
+            socket.emit('new-note', noteInput.value);
+            noteInput.value = '';
+        }
+
+        noteInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendNote();
+        });
+
+        socket.on('new-note', (note) => {
+            const div = document.createElement('div');
+            div.className = 'note';
+            div.textContent = note;
+            notesDiv.prepend(div);
+        });
+    </script>
+</body>
+</html>
